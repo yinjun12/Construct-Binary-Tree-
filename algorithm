@@ -1,0 +1,27 @@
+struct TreeNode
+{
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x):val(x),left(NULL),right(NULL){}
+}
+1.construct Binary treee from inorder and postorder:
+    TreeNode *buildTreeHelper(vector<int> &inorder,vector<int> &postorder,int inleft,int inright,int poleft,int poright)//
+    {//inleft，inright分别用来标记inorder的起始和结束,poleft和poright用来标记postorder的起始和结束。
+        if(inleft>inright||poleft>poright) return NULL;
+        int temp=postorder[poright];//取后序的最后的一个元素，作为根
+        int cur;
+        TreeNode *root=new TreeNode(temp);
+        for(int i=0;i<inorder.size();i++)//找到根在inorder中的位置
+        {
+            if(inorder[i]==temp) {cur=i;break;}
+        }
+        root->left=buildTreeHelper(inorder,postorder,inleft,cur-1,poleft,poleft+cur-1-inleft);//递归找到左，右子树；用cur把inorder和postorder分别分成两个子列
+        root->right=buildTreeHelper(inorder,postorder,cur+1,inright,poleft+cur-inleft,poright-1);
+        return root;
+    }
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {//用起始和结束来标记，不能用新建立一个vector来做，那样浪费空间
+        return buildTreeHelper(inorder,postorder,0,inorder.size()-1,0,postorder.size()-1);
+    }
+	
+	
